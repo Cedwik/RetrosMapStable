@@ -30,13 +30,8 @@ permission on your app, which PhoneGap requires.
 
     <!-- Core plugins -->
  	    <gap:plugin name="org.apache.cordova.geolocation" />
--	    <gap:plugin name="org.apache.cordova.globalization" />
+	    <gap:plugin name="org.apache.cordova.globalization" />
  	    <gap:plugin name="org.apache.cordova.splashscreen" />
- 		<gap:plugin name="com.phonegap.plugins.facebookconnect" />
-
-
-    <param name="APP_ID" value="..." />
-    <param name="APP_NAME" value="..." />
 
 
 	<preference name="orientation" value="default" /> <!-- all: default means both landscape and portrait are enabled -->
