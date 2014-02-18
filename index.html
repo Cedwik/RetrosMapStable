@@ -1,0 +1,480 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>Menu principal</title> 
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="css/jquery-mobile-theme-01/themes/retro_style.css" />
+	<link rel="stylesheet" href="css/jquery-mobile-theme-01/themes/jquery.mobile.icons.min.css" />
+	  
+	<link rel="stylesheet" href="css/base.css" />
+	<link rel="stylesheet" href="css/menu.css" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.0/jquery.mobile.structure-1.4.0.min.css" />
+  
+  
+<!--script-->
+		<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDRU_hzB5XTYUQ5vWe1dpHffk053tR4Sg&sensor=true">
+    </script>
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script> 
+	<script src="http://code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script> 
+	<script type="text/javascript">
+
+		
+//variables pour initialiser la carte et le watchID (qui sert pour la géolocalisation en temps réel)
+var map;
+var watchID = null;
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();		
+
+	function centerPos(controlDiv, map) {
+
+		  // Set CSS styles for the DIV containing the control
+		  // Setting padding to 5 px will offset the control
+		  // from the edge of the map
+		  controlDiv.style.padding = '5px';
+
+		  // Set CSS for the control border
+		  var controlUI = document.createElement('div');
+		  controlUI.style.backgroundColor = 'white';
+		  controlUI.style.borderStyle = 'solid';
+		  controlUI.style.borderWidth = '6px';
+		  controlUI.style.cursor = 'pointer';
+		  controlUI.style.textAlign = 'center';
+		  controlUI.title = 'Click to set the map to Home';
+		  controlDiv.appendChild(controlUI);
+
+		  // Set CSS for the control interior
+		  var controlText = document.createElement('div');
+		  controlText.style.fontFamily = 'Arial,sans-serif';
+		  controlText.style.fontSize = '12px';
+		  controlText.style.paddingLeft = '4px';
+		  controlText.style.paddingRight = '4px';
+		  controlText.innerHTML = '<b>Centrer</b>';
+		  controlUI.appendChild(controlText);
+
+		  // Setup the click event listeners: simply set the map to
+		  // Chicago
+		  google.maps.event.addDomListener(controlUI, 'click', function() {
+			findMyLocation();
+		  });
+
+	};
+	
+	function autoRefresh(RefreshDiv, map, watchButton) {
+		
+		  // Set CSS styles for the DIV containing the control
+		  // Setting padding to 5 px will offset the control
+		  // from the edge of the map
+		  RefreshDiv.style.padding = '5px';
+
+		  // Set CSS for the control border
+		  var controlUI = document.createElement('div');
+		  controlUI.style.backgroundColor = 'white';
+		  controlUI.style.borderStyle = 'solid';
+		  controlUI.style.borderWidth = '6px';
+		  controlUI.style.cursor = 'pointer';
+		  controlUI.style.textAlign = 'center';
+		  controlUI.title = 'Cliquez pour activer la géolocalisation automatique';
+		  RefreshDiv.appendChild(controlUI);
+
+		  // Set CSS for the control interior
+		  var controlText = document.createElement('div');
+		  controlText.style.fontFamily = 'Arial,sans-serif';
+		  controlText.style.fontSize = '12px';
+		  controlText.style.paddingLeft = '4px';
+		  controlText.style.paddingRight = '4px';
+		  controlText.innerHTML = '<b>Auto Refreh geo</b>';
+		  controlUI.appendChild(controlText);
+			
+		  google.maps.event.addDomListener(controlUI, 'click', function() {
+				Watch();
+
+	});
+	
+	}
+
+// fonction initialize qui s'active dès le chargement de la page : affiche la carte, centrée sur la position du mobile, 
+function initialize() {
+		
+	
+		// Bout de code ajax qui va afficher les marqueurs et les rendre clicables
+		$.ajax({
+			type: 'GET',
+			url: 'http://www.argosapps.fr/test_markers/liste_lieux_geo.php?&jsoncallback=?', //jsoncallback très important sinon requête ne va pas marcher
+			dataType: 'JSONp',
+			timeout: 8000,
+			success: function(data) {
+				
+				$.each(data, function(i,item){
+				$('#markers').append('<p> Lieu : ' + item.nom_lieu + ' Latitude : ' + item.latitude + ' longitude : ' + item.longitude + '</p>');
+					var LatLngMarker = new google.maps.LatLng(item.latitude, item.longitude);
+					var marker = new google.maps.Marker({
+						position: LatLngMarker,
+						map: map,
+						title : item.nom_lieu
+					});
+					
+
+					google.maps.event.addListener(marker, "click",  function (e) {												
+
+						var iw = new google.maps.InfoWindow({
+							content : '<div class="iwContent">'+ 
+							'<img src="img/procope.jpg" />' +
+							'<a href=" ' + marker.title +'.html" class="iwLink">' + marker.title + '</a> </br>'+
+							'<p> ' + item.adresse + '</p>'+
+							'<a href="#" class="iwButton" onclick="calcRoute('+item.longitude+' , ' +item.latitude +')"> Se rendre la bas ! </a>'+
+							'</div>',
+							maxWidth : 800
+							
+						});
+						map.setCenter(LatLngMarker);				
+						iw.open(map, marker); 
+					});
+					
+				});
+			},
+			error: function(data) {
+				alert('Buuuug');
+			}
+		});
+
+
+
+
+
+	directionsDisplay = new google.maps.DirectionsRenderer();
+	google.maps.visualRefresh = true;
+	
+	var mapOptions = {zoom: 13, mapTypeId: google.maps.MapTypeId.TERRAIN, disableDefaultUI: true}; //
+	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+  		
+
+  directionsDisplay.setMap(map);
+
+
+  var posControlDiv = document.createElement('div');
+  var posControl = new centerPos(posControlDiv, map);
+  posControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(posControlDiv);  
+
+  var RefreshDiv = document.createElement('div');
+  var autoRefreshButton = new autoRefresh(RefreshDiv, map);
+  RefreshDiv.index = 1;
+  map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(RefreshDiv);  
+  
+
+	
+	
+	
+	 //On place les marqueurs ici 
+	 
+	 // google.maps.LatLng est une variable qui contient deux coordonnées latitude et longitude. On va l'utiliser a chaque fois afin que la position soit utilisable dans les fonctions de l'API maps 
+	
+
+	  
+	  
+  // Try HTML5 geolocation
+	if(navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+		
+		//On entre les coordonnées du centre de la carte dans une variable (ici ce sont des coordonnées aléatoires pour voir si la position s'actualise bien quand on appuie sur les boutons) 
+		  var pos = new google.maps.LatLng(48.8808876, 2.3405177);
+		
+		//On crée une petite infobulle pour montrer précisément l'endroit ou on est
+		  var infowindow = new google.maps.InfoWindow({
+			map: map,
+			position: pos,
+			content: 'Vous êtes ici'
+		  });
+		
+		//Puis on centre sur le point
+		  map.setCenter(pos);
+		  
+		  //on appelle les fonctions qui préviennent que la géolocalisation marche ou pas (si ça marche elle n'affiche rien) 
+		}, function() { //si ça marche, la fonction envoie la valeur true 
+		  handleNoGeolocation(true);
+		});
+	  }   else {
+		// Browser doesn't support Geolocation
+		handleNoGeolocation(false);
+		};
+		//Affiche l'erreur, et affiche une page avec une coordonnée fixe 
+		
+	function handleNoGeolocation(errorFlag) {
+		if (errorFlag) {
+			var content = 'Error: The Geolocation service failed.';
+		} else {
+			var content = 'Error: Your browser doesn\'t support geolocation.';
+		}
+		//fin des tests pour identifier l'erreur
+  
+  
+//on dessine maintenant la nouvelle carte et on la centre sur la position fixe
+  var options = {
+    map: map,
+    position: new google.maps.LatLng(48.51181, 2.20324),
+    content: content
+  };
+
+  var infowindow = new google.maps.InfoWindow(options);
+  map.setCenter(options.position);
+}
+  directionsDisplay.setPanel(document.getElementById('directions-panel'));
+
+
+
+		
+
+};
+
+
+////////////////////////////// FIN INITIALIZE ////////////////////////////////////////////////////////
+
+
+////////////////////////////// CALC ROUTE //////////////////////////////////////////////////////////
+  function calcRoute(MarkLon, MarkLat) {
+  
+  	$('#endLat').append('<option value="'+ MarkLat +'"></option>');
+	$('#endLon').append('<option value="'+ MarkLon +'"></option>');
+	$('#map-canvas').css({"width":"75vw"});
+
+	
+navigator.geolocation.getCurrentPosition(success, error);
+
+function success(position) {
+  var request = {
+      origin: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+      destination: new google.maps.LatLng(MarkLat, MarkLon),
+      travelMode: google.maps.TravelMode.WALKING
+  };
+
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+	
+      directionsDisplay.setDirections(response);
+    }
+	else {
+		alert('Erreur, chemin non trouvé, essayez avec un autre moyen de transport');
+	}
+  });
+		
+		var DirPanButton = document.createElement('div');
+		var DirPanButton = new showDirPanel(DirPanButton, map);
+		DirPanButton.index = 1;
+		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(DirPanButton);  
+	};
+ 
+ function error() {
+	alert('Impossible de retrouver votre position');
+ };
+ 
+ 
+ 
+}
+
+
+/////////////////////////////// AJOUTER LE BOUTON DIRECTION PANEL /////////////////////
+	function showDirPanel(DirPanButton, map, watchButton) {
+		
+		  // Set CSS styles for the DIV containing the control
+		  // Setting padding to 5 px will offset the control
+		  // from the edge of the map
+		  DirPanButton.style.padding = '5px';
+
+		  // Set CSS for the control border
+		  var controlUI = document.createElement('div');
+		  controlUI.style.backgroundColor = 'white';
+		  controlUI.style.borderStyle = 'solid';
+		  controlUI.style.borderWidth = '6px';
+		  controlUI.style.cursor = 'pointer';
+		  controlUI.style.textAlign = 'center';
+		  controlUI.title = 'Cliquez pour activer la géolocalisation automatique';
+		  DirPanButton.appendChild(controlUI);
+
+		  // Set CSS for the control interior
+		  var controlText = document.createElement('div');
+		  controlText.style.fontFamily = 'Arial,sans-serif';
+		  controlText.style.fontSize = '12px';
+		  controlText.style.paddingLeft = '4px';
+		  controlText.style.paddingRight = '4px';
+		  controlText.innerHTML = '<b>Directions</b>';
+		  controlUI.appendChild(controlText);
+			
+		  google.maps.event.addDomListener(controlUI, 'click', function() {
+		
+				if ( $('#map-canvas').width() == "75vw" ) {
+					$('#map-canvas').css({"width":"100vw"});
+				} else {
+					$('#map-canvas').css({"width":"75vw"});
+				}
+
+			});
+	
+	}
+
+
+
+
+
+//la fonction pour récupérer notre position actuelle et recentrer la carte 
+function findMyLocation() {
+	    navigator.geolocation.getCurrentPosition(function(position) {
+			var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+			
+			//sert a afficher les informations récupérées par le gps pour les afficher sous forme de texte								
+			//change l'infobulle pour la centrer sur notre position
+			var infowindow = new google.maps.InfoWindow({
+				map: map,
+				position: pos,
+				content: 'Vous êtes ici'
+			});
+			map.setCenter(pos);
+			$('#start').append('<option value="'+ pos +'"></option>');
+		});
+		
+};
+
+
+
+
+// Watch : fonction pour activer la géolocalisation en temps réel 
+function Watch () {
+		
+
+		  if (watchID != null) {
+            navigator.geolocation.clearWatch(watchID);
+            watchID = null;
+			alert('NSA : "ok pardon on arrete :(" ');
+        } else {
+			var options = { //on définit les options de la fonction watchID, timeout : le temps avant que la position ne se rafraichisse (pas sur)  			enableHighAccuracy : activer la géolocalisation précise 
+				timeout: 10000,
+				enableHighAccuracy : true
+			};
+        watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+				
+		}
+};
+			
+			
+			function onSuccess(position) { //si la récupération des coordonnées marche, on appelle cette fonction 
+					var positionWatch = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+					alert('ça marche !'); 
+					// les 10 lignes ci dessus permettent d'afficher les coordonnées récupérées en texte 
+					var element = document.getElementById('geolocation');
+					element.innerHTML = 'Latitude: '           + position.coords.latitude              + '<br />' +
+								'Longitude: '          + position.coords.longitude             + '<br />' +
+								'Altitude: '           + position.coords.altitude              + '<br />' +
+								'Accuracy: '           + position.coords.accuracy              + '<br />' +
+								'Altitude Accuracy: '  + position.coords.altitudeAccuracy      + '<br />' +
+								'Heading: '            + position.coords.heading               + '<br />' +
+								'Speed: '              + position.coords.speed                 + '<br />' +
+					
+					map.setCenter(positionWatch);
+					      var infowindow = new google.maps.InfoWindow({
+							map: map,
+							position: positionWatch,
+							content: 'Vous êtes ici'
+						  });
+			};
+			
+			//fonction appellée si la récupération de coordonnées ne marche pas. c'est facultatif et ne sert surtout que pour le developpement 
+			function onError(error) {
+				alert('code: '    + error.code    + '\n message: ' + error.message + '\n');
+			};
+
+	//la fonction clearWatch désactive la géolocalisation en temps réel, si elle n'est pas activée quand on veut la désactiver un message s'affiche pour dire que la fonction n'est pas activée 
+	 function clearWatch() {
+        if (watchID != null) {
+            navigator.geolocation.clearWatch(watchID);
+            watchID = null;
+			alert('NSA : "ok pardon on arrete :(" ');
+        } else {
+			alert('Pour désactiver le watchID, faut l\'activer !');
+		};
+	};	
+
+
+// Voici l'écouteur qui va, une fois la page chargée, appeller la fonction initialize ci dessus 
+google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+	  
+	  </script>
+</head>
+ 
+<body> 
+<div data-role="page">
+	<div data-role="header" data-position="fixed" id="menu_fixe">
+	
+<!-- data-icon="nom_icone" ça affiche l'icône qui porte ce nom-->	
+<!-- data-iconpos="notext" permet de ne pas afficher le nom du bouton c'est seulement pour les lecteurs d'écran -->	
+<!-- data-corners="false" ça enlèves les coins arrondis du bouton/icone -->	
+
+	<!-- bouton qui fait sortir le menu de gauche-->
+	<a href="#menu_gauche" data-icon="icon_header_bars" data-iconpos="notext" data-corners="false">Menu</a>
+		<h1><a href="index.html">Rétrospective</a></h1><!-- redirection vers la page d'accueil menu-->
+	</div><!-- /header -->
+
+	<div data-role="content" id="content_map">	
+<!--	<div align="center">
+            <a href="#" class="btn" onclick="findMyLocation();">Find My Location</a>
+            <p id="location"></p>
+        </div>
+-->
+		<a href="#" class="btn" onclick="Watch();">Activer la géolocalisation automatique </a>
+		<a href="#" class="btn" onclick="clearWatch();">Désactiver la géolocalisation automatique </a>
+		
+		
+<div id="panel">
+    <select id="start">
+    </select>
+</div>
+		
+	
+		
+	<div id="map-canvas"></div>
+			<div id="directions-panel"></div>
+	
+	
+	</div><!-- /content -->
+	
+	
+		<!-- MENU de GAUCHE -->
+	<div data-role="panel" id="menu_gauche" data-display="reveal" data-position="left" data-transition="slide">
+			<ul data-role='listview' data-icon="false">
+				<li>Fiches
+					<li><a href="liste_lieux.html"><img src="img/menu/menu_gauche/icon_small_lieu.png" alt=""/>Lieux</a></li>
+					
+					<li><a href="liste_persos.html">
+					<img src="img/menu/menu_gauche/icon_small_perso.png" alt="">Personnages</a></li>
+					
+					<li><a href="liste_epoques.html">
+					<img src="img/menu/menu_gauche/icon_small_epoque.png" alt="">Epoques</a></li>
+					
+					<li><a href="liste_arr.html"><img src="img/menu/menu_gauche/icon_small_arr.png" alt="">Arrondissements</a></li>
+					
+					<li><a href="#"><img src="img/menu/menu_gauche/icon_small_plan_metro.png" alt="">Plan métro</a></li>
+				
+				<li>Communauté
+					<li><a href="ajout_lieu.html"><img src="img/menu/menu_gauche/icon_small_ajout_lieu.png" alt="">Ajouter un lieu</a></li>
+					
+					<li><a href="#"><img src="img/menu/menu_gauche/icon_small_evenements.png" alt="">Evènements</a></li>
+				
+				
+				<li>Compte
+					<li><a href="se_connecter.html"><img src="img/menu/menu_gauche/icon_small_se_connecte.png" alt="">Se connecter</a></li>
+					
+					<li><a href="#"><img src="img/menu/menu_gauche/icon_small_favoris.png" alt="">Favoris</a></li>
+					
+					<li><a href="#"><img src="img/menu/menu_gauche/icon_small_parametres.png" alt="">Paramètres</a></li>
+			</ul>
+	</div><!-- MENU de GAUCHE -->
+	
+</div><!-- /page -->
+
+<!-- script pour afficher menu de gauche  -->
+<script text="text/javascript" src="js/menu_gauche.js"></script> 
+</body>
+</html>

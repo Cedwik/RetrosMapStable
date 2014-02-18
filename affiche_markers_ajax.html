@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hey you</title>
+		<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDRU_hzB5XTYUQ5vWe1dpHffk053tR4Sg&sensor=false">
+    </script>
+	<script type="text/javascript" charset="utf-8" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+			<script type="text/javascript">
+	
+	function afficherMarkers() {
+		var markers = $('#markers');
+		
+		$.ajax({
+			type: 'GET',
+			url: 'http://www.argosapps.fr/test_markers/liste_lieux_geo.php?&jsoncallback=?', //jsoncallback très important sinon requête ne va pas marcher
+			dataType: 'JSONp',
+			timeout: 8000,
+			success: function(data) {
+    
+				$.each(data, function(i,item){
+					markers.append('<p> Lieu : ' + item.nom_lieu + ' Latitude : ' + item.latitude + ' longitude : ' + item.longitude + '</p>');
+
+				});
+			},
+			error: function(data) {
+				markers.append('<li>There was an error loading the markers');
+				alert('Buuuug');
+			}
+		});
+	}
+	
+		</script>
+    </head>
+    <body>			
+	
+		<div onclick="afficherMarkers()"> 
+			afficher les markers
+		</div>
+	
+		<div id="markers">
+			
+			
+	
+		
+		</div>
+	
+	
+		
+		
+
+        <script type="text/javascript" src="phonegap.js"></script>
+        <!--<script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript">
+            app.initialize();
+        </script>-->
+		
+		
+
+
+    </body>
+</html>

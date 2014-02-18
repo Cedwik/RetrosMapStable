@@ -1,0 +1,24 @@
+/*couleur de chaque onglet*/
+#menu #lieux {background-color: #6E997B;}
+#menu #proxi{background-color: #DEA554;}
+#menu #perso {background-color: #CA583E;}
+#menu #epoque {background-color: #618585;}
+#menu #arr {background-color: #6C96A4;}
+#menu #ajout_lieux {background-color: #8FCF61;}*
+
+
+/*emplacement icone des thèmes de menu*/
+#menu a img {
+display: block; /*mettre les img au dessus du texte*/
+text-align: center;
+margin: 0 auto;
+}
+
+
+#content{
+height : 100%;
+width: 100%; /*pour quue le menu prenne toute la largeur*/
+margin-left: -16px; /*pour décaler vers la gauche le menu*/
+}
+
+

@@ -1,0 +1,13 @@
+/*! jQuery Mobile 1.4.0 | Git HEAD hash: f09aae0 <> 2013-12-19T17:34:22Z | (c) 2010, 2013 jQuery Foundation, Inc. | jquery.org/license */
+
+/*bouton du menu_gauche*/
+.ui-icon-icon_header_bars:after{background-image:url(../../../img/menu/icon_header_bars.png)}
+
+/*bouton flèche vers la droite*/
+.ui-icon-bouton_r:after{background-image:url(../../../img/bouton_r.png)}
+
+/*bouton flèche vers le bas*/
+.ui-icon-bouton_b:after{background-image:url(../../../img/bouton_b.png)}
+
+/*bouton flèche vers la gauche*/
+.ui-icon-bouton_l:after{background-image:url(../../../img/bouton_l.png)}

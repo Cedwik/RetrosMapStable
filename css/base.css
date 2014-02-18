@@ -1,0 +1,347 @@
+@font-face{ 
+	font-family: 'yellowtail';
+	src: url('../font/yellowtail/Yellowtail.eot');
+	src: url('../font/yellowtail/Yellowtail.eot?iefix') format('eot'),
+	     url('../font/yellowtail/Yellowtail.woff') format('woff'),
+	     url('../font/yellowtail/Yellowtail.ttf') format('truetype'),
+		 url('../font/yellowtail/Yellowtail.svg#webfont') format('svg');	 
+}
+
+@font-face{ 
+	font-family: 'lane';
+	src: url('../font/lane/lane.eot');
+	src: url('../font/lane/lane.eot?iefix') format('eot'),
+	     url('../font/lane/lane.woff') format('woff'),
+	     url('../font/lane/lane.ttf') format('truetype'),
+		 url('../font/lane/lane.svg#webfont') format('svg');	 
+}
+
+/*le fond de la page*/
+body .ui-page {
+background: url('../img/background.png');
+/* background-color: #e7e0d0; */
+}
+
+
+/*******************************Header "retrospective"****************************/
+/*couleur de fond du header*/
+.ui-header-fixed {
+background-color: #E66A52;
+border: none;
+}
+
+/*titre header: restrospective*/
+#menu_fixe h1 a, #menu a{
+font-family: yellowtail;
+color: #FDF7E7; 
+text-decoration: none; 
+font-weight: lighter; 
+}
+
+#menu_fixe h1 a {font-size: 20px; }
+#menu a {font-family: lane; font-size: 16px;}
+
+
+/*titre de chaque page*/
+#page_title {
+background-color: #f2e6cc;
+font-size : 10px;
+text-align: center;
+color: #e76952;
+font-weight: lighter;
+border-left: 10px solid;
+box-shadow: 0 0 2px black; /*ombre sous le page_title*/
+padding: 1px; /*petit espace sous le titre de la page*/
+margin: 0 -16px; /*pour retirer l'espace de droite et gauche*/
+}
+
+/*bouton retour*/
+#page_title a {
+float: left;
+margin: 10px 0px 0 10px;	
+/* border-radius: 0; */
+background-color: #939393;
+}
+
+/*re-centrer le titre*/
+#page_title h1 {margin-right: 40px;}
+
+
+/*************************MENU GAUCHE************************/
+/*menu type (fiches,communautés, compte)*/
+#menu_gauche ul li{
+background: #f2ecd6;
+font-size: 12px;
+} 
+
+/*bouton menu lien (lieu, perso, epoque...)*/
+#menu_gauche ul li a {
+background: url('../img/background.png');
+color: black;
+font-weight: lighter;
+}
+#menu_gauche ul li a:active {
+background: url('../img/background_active.png');
+}
+
+
+/*emplacement de l'img icone du menu*/
+#menu_gauche ul li a img{
+padding-left: 15px;
+}
+
+/*hauteur des liens de la liste du menu de gauche*/
+#menu_gauche .ui-listview > .ui-li-has-thumb > .ui-btn{
+min-height: 0em;
+}
+
+
+/*****bordure de gauche******/
+#menu_gauche ul li:nth-child(2){  /*lieu*/
+border-left: 7px solid #6E997B;
+}
+
+#menu_gauche ul li:nth-child(3){ /*perso*/
+border-left: 7px solid #CA583E;
+}
+ 
+#menu_gauche ul li:nth-child(4){ /*epoque*/
+border-left: 7px solid #618585;
+}
+
+#menu_gauche ul li:nth-child(5){ /*arr*/
+border-left: 7px solid #6C96A4;
+}
+
+#menu_gauche ul li:nth-child(6){ /*plan metro*/
+border-left: 7px solid #da9939;
+}
+
+#menu_gauche ul li:nth-child(8){ /*ajout_lieu*/
+border-left: 7px solid #8FCF61;
+}
+
+#menu_gauche ul li:nth-child(9){ /*evenement*/
+border-left: 7px solid #937dab;
+}
+
+#menu_gauche ul li:nth-child(11){ /*se_co*/
+border-left: 7px solid #66929f;
+}
+
+#menu_gauche ul li:nth-child(12){ /*fav*/
+border-left: 7px solid #b86650;
+}
+
+#menu_gauche ul li:nth-child(13){ /*parametre*/
+border-left: 7px solid #73a84a;
+}
+
+
+
+/*BUUUUUUUUUUUUG*/
+/*barre de recherche*/
+#search_bar {
+padding: 0 5px;
+margin-bottom: -10px;
+margin-top: -10px;
+}
+
+/****************************ONGLET*************************/
+/*ONGLET qui sert de navigation (A-Z et type) dans les pages liste_lieux & liste_perso*/
+.ui-page-theme-a #onglet .ui-btn  {
+background-color: #eadfc1; /*si sur la page*/
+border: none;
+border-bottom: 1px #9a9688 solid;
+color: #e76952;
+font-size: 16px;
+width: 100%;
+padding-top: 8px; /*espace au dessus du nom de l'onglet*/
+padding-bottom: 8px; /*espace en-dessous du nom de l'onglet*/
+font-weight: bold;
+text-shadow: none;
+margin-left: -17px; /*pour coller la boite d'onglet sur la gauche*/
+margin-top: 1px; /*espace entre page title et les onglets*/
+}
+
+/*apparence bouton de l'onglet (cliquable)*/
+.ui-page-theme-a #onglet .ui-btn {
+background-color: #ede3ca ;
+}
+
+
+/*apparence bouton de l'onglet (lorsqu'on est sur la page)*/
+#onglet .onglet_actif {
+background-color: #E66A52 !important;
+color: #ede3ca !important;
+}
+
+
+/***************************LIEN DE TYPE LISTVIEW**********************/
+/*hauteur, emplacement texte*/
+.contenu_liste  .ui-listview > .ui-li-has-thumb > .ui-btn{
+min-height: 0em;
+text-align: center;
+padding-right: 50px; /*permet de mieux centrer le texte qui a été décentré à cause de l'image*/
+}
+
+
+/*emplacement de l'img à guache du texte*/
+.contenu_liste ul li a img{
+padding-left: 15px;
+
+/*centrer verticalement l'img */
+position: absolute;
+top: 0;
+bottom: 0;
+margin: auto;
+}
+
+
+/*Au clique d'un lien*/
+.ui-listview > li > a.ui-btn:active{background-color: #dad1bb;}
+
+/*
+.ui-page-theme-a .ui-btn.ui-btn-active {background-color: #dad1bb;}*/
+
+/*remonter liste pour coller/s'approcher à la #page_title*/
+div .ui-content{
+padding-top: 0;
+}
+
+/*aspect d'un lien qui a été cliqué*/
+.ui-listview > li > a.ui-btn:visited{text-decoration: none;}
+
+/*********************************/
+.alinea {text-indent: 12px;}
+.bold {font-weight: bold;}
+.right {text-align: right;}
+.left {text-align: left;}
+.nb {
+font-size: 11px; 
+color: red;
+}
+
+
+/******************page perso et lieux*******/
+/*texte*/
+.rose {color : #e76952;} 
+
+/*fond*/
+.fondbeige {
+background-color: #f8f6ea;
+}
+
+.fondbeige h3 {
+margin-top: 0px; /*espace entre le haut de la case et le titre (oeuvre, lieux fréquenté)*/
+text-shadow: 0px 1px 0px #ccc;
+}
+
+
+
+/******BOUTON INPUT*******/
+/*largeur bouton*/
+.button {
+width: 50%;
+margin: 0 auto;
+}
+
+/*couleur bouton*/
+.button input {
+background-color: red;
+color: #E66A52;/*buuuuuuuuug*/
+}
+
+
+
+#map-canvas {
+		width : 100vw;
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+		
+      }
+		
+		
+	.iwContent {
+		min-width : 300px;
+		heigth : 500px;
+
+	}
+	
+	.iwContent img {
+		float : left;
+		margin-right : 5px;
+	}
+	
+	.iwContent a, .iwContent p  {
+		text-align : top;
+		line-height : 1px;
+	}
+	
+	a.iwButton{
+		color : white;
+		padding : 5px 5px 5px 5px;
+		background : rgb(230, 106, 82);
+		text-decoration : none;
+		font-color : white;
+		float : right;
+		
+	 }
+	 
+	 a.iwButton:target{
+		color : white;
+		background : white;
+		
+	}
+
+	a.iwButton:hover {
+		color : white;
+	 
+	}
+	
+	.iwLink {
+		display : inline-block;
+		text-decoration : none;
+		
+	  }
+	
+	  
+#content_map {
+	width : 100vw;
+	height : 90vh;
+	margin-left : -16px;
+	
+}	
+
+#panel {
+	display : none;
+}
+
+
+      #directions-panel {
+        height: 100%;
+        width: 390px;
+		overflow: auto;
+		max-height : 95vh;
+		float : right;
+		position : absolute;
+		top : 50px;
+		right : 0px;
+      }
+	  
+      #control {
+        background: #fff;
+        padding: 5px;
+        font-size: 14px;
+        font-family: Arial;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+        display: none;
+      }
+
+	  
+
+
+
+	
